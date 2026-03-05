@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.App.Application.Exception
 {
-    public class UnAuthorizedExeption :ApplicationException
+    public class UnAuthorizedExeption :NotFoundException
     {
-        public UnAuthorizedExeption(string? Message = null) : base(Message)
+        public UnAuthorizedExeption(string? Message = null) : base(Message!,null)
         {
             
         }

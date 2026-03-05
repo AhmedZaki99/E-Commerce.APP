@@ -14,5 +14,7 @@ namespace E_Commerce.App.Application.Mapping
 
                 return string.Empty ;
             }
-        }
+
+      
+    }
     }

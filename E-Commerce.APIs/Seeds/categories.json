@@ -3,49 +3,57 @@
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Frappuccino"
+    "Name": "Frappuccino",
+    "PictureUrl": "images/Categories/Frappuccino.jpg"
   },
   {
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Latte"
+    "Name": "Latte",
+    "PictureUrl": "images/Categories/Latte.jpg"
   },
   {
 
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Mocha"
+    "Name": "Mocha",
+    "PictureUrl": "images/Categories/Mocha.jpg"
   },
   {
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Macchiato"
+    "Name": "Macchiato",
+    "PictureUrl": "images/Categories/Macchiato.jpg"
   },
   {
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Matcha"
+    "Name": "Matcha",
+    "PictureUrl": "images/Categories/Matcha.jpg"
   },
   {
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Cake"
+    "Name": "Cake",
+    "PictureUrl": "images/Categories/Cake.jpg"
   },
   {
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Donuts"
+    "Name": "Donuts",
+    "PictureUrl": "images/Categories/Donuts.jpg"
   },
   {
     "Id": 0,
     "CreatedBy": "1",
     "lastModifiedBy": "1",
-    "Name": "Salad"
+    "Name": "Salad",
+    "PictureUrl": "images/Categories/Salad.jpg"
   }
 ]

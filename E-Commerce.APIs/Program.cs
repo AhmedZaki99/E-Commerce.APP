@@ -10,24 +10,28 @@ using E_Commerce.App.Infrastructre.presistent;
 using E_Commerce.App.Infrastructre.presistent.Identity;
 using E_Commerce_Api.Controller;
 using E_Commerce_Api.Controller.Error;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Policy;
+using System.Text;
 namespace E_Commerce.APIs
 {
     public class Program
     {
         public static async Task Main(string[] args)
         {
-            var WebApplicationBuilder = WebApplication.CreateBuilder(args);
-
-
+            var WebApplicationbuilder = WebApplication.CreateBuilder(args);
+        
+            
             #region Configuration Service
 
             // Add services to the container.
 
-            WebApplicationBuilder.Services.AddControllers()
-                .ConfigureApiBehaviorOptions(option =>
-                {
+            WebApplicationbuilder.Services.AddControllers()
+                .ConfigureApiBehaviorOptions(option => {
                     option.SuppressModelStateInvalidFilter = false;
                     option.InvalidModelStateResponseFactory = (actionContext) =>
                     {
@@ -44,19 +48,19 @@ namespace E_Commerce.APIs
                 })
                 .AddApplicationPart(typeof(ControllerAssemblyInformation).Assembly);
 
-            WebApplicationBuilder.Services.AddEndpointsApiExplorer().AddSwaggerGen();
+            WebApplicationbuilder.Services.AddEndpointsApiExplorer().AddSwaggerGen();
 
-            WebApplicationBuilder.Services.AddHttpContextAccessor();
-            WebApplicationBuilder.Services.AddScoped(typeof(ILoggedInUserService), typeof(LoggedInUserService));
+            WebApplicationbuilder.Services.AddHttpContextAccessor();
+            WebApplicationbuilder.Services.AddScoped(typeof(ILoggedInUserService) , typeof(LoggedInUserService));
 
-            WebApplicationBuilder.Services.AddPersistenceService(WebApplicationBuilder.Configuration);
-            WebApplicationBuilder.Services.AddApplicatinServices();
-            WebApplicationBuilder.Services.AddInfrastructureServices(WebApplicationBuilder.Configuration);
-            WebApplicationBuilder.Services.Configure<JWTSettings>(WebApplicationBuilder.Configuration.GetSection("JWTSettings"));
+            WebApplicationbuilder.Services.AddPersistenceService(WebApplicationbuilder.Configuration);
+            WebApplicationbuilder.Services.AddApplicatinServices();
+            WebApplicationbuilder.Services.AddInfrastructureServices(WebApplicationbuilder.Configuration);
+            WebApplicationbuilder.Services.Configure<JWTSettings>(WebApplicationbuilder.Configuration.GetSection("JWTSettings"));
 
-            WebApplicationBuilder.Services.AddIdentity<ApplicationsUser, IdentityRole>(Identityoptions =>
-            {
+            WebApplicationbuilder.Services.AddIdentity<ApplicationsUser, IdentityRole>(Identityoptions => {
 
+                
                 //Identityoptions.SignIn.RequireConfirmedEmail = true;
                 //Identityoptions.SignIn.RequireConfirmedPhoneNumber = true;
                 //Identityoptions.SignIn.RequireConfirmedPhoneNumber = true;
@@ -71,19 +75,47 @@ namespace E_Commerce.APIs
                 Identityoptions.Lockout.AllowedForNewUsers = true;
                 Identityoptions.Lockout.MaxFailedAccessAttempts = 5;
                 Identityoptions.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
+                Identityoptions.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
 
             }
             )
-                .AddEntityFrameworkStores<StorIdentityDbContext>();
+                .AddEntityFrameworkStores<StorIdentityDbContext>().AddDefaultTokenProviders(); 
 
+            WebApplicationbuilder.Services.AddAuthentication(authentationOption 
+                => {
+                    authentationOption.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).AddJwtBearer( jwtOption => {
+                    jwtOption.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
 
+                        ValidIssuer = WebApplicationbuilder.Configuration["JWTSettings:issuer"],
+                        ValidAudience = WebApplicationbuilder.Configuration["JWTSettings:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(WebApplicationbuilder.Configuration["JWTSettings:Key"]!)),
+                        ClockSkew = TimeSpan.FromMinutes(0)
+                    };
+                });
 
+            WebApplicationbuilder.Services.AddAuthentication(Option =>
+            {
+                Option.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                Option.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(GoogleOption =>
+            {
+                GoogleOption.ClientId = WebApplicationbuilder.Configuration["Authentication:Google:ClientId"]!;
+                GoogleOption.ClientSecret = WebApplicationbuilder.Configuration["Authentication:Google:ClientSecret"]!;
+            });
 
+            WebApplicationbuilder.Services.Configure<EmailSetting>(WebApplicationbuilder.Configuration.GetSection("EmailSettings"));
 
+            
 
             #endregion
 
-            var app = WebApplicationBuilder.Build();
+            var app = WebApplicationbuilder.Build();
 
             #region Update Database and Data Seeding
 
@@ -98,7 +130,7 @@ namespace E_Commerce.APIs
             {
 
                 await stroreContext.UpdateDateBase();
-                await stroreContext.SeedData(WebApplicationBuilder.Environment.ContentRootPath);
+                await stroreContext.SeedData(WebApplicationbuilder.Environment.ContentRootPath);
 
                 await IdentityContext.UpdateDateBase();
                 await IdentityContext.SeedData();

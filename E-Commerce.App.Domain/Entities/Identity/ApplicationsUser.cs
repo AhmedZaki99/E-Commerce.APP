@@ -12,5 +12,7 @@ namespace E_Commerce.App.Domain.Entities.Identity
         public required string DisableName { get; set; }
 
         public virtual Address? Address { get; set; }
+        public string? Otp { get; set; }
+        public DateTime? OtpExpire { get; set; }
     }
 }

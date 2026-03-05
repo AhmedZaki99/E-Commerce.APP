@@ -10,5 +10,7 @@ namespace E_Commerce.App.Application.Abstruction.Models.Product
     {
         public int Id { get; set; }
         public required string Name { get; set; }
+        public string? PictureUrl { get; set; }
+
     }
 }

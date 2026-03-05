@@ -1,25 +1,26 @@
-﻿using E_Commerce.App.Application.Abstruction.Common;
-using E_Commerce.App.Application.Abstruction.Models.Auth;
+﻿using E_Commerce.App.Application.Abstruction.Models.Auth;
 using E_Commerce.App.Application.Abstruction.Services.Auth;
 using E_Commerce.App.Application.Exception;
 using E_Commerce.App.Domain.Entities.Identity;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
+using System.Security.Policy;
 using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Core;
 
 namespace E_Commerce.App.Application.Service.Auth
 {
     public class AuthService(
         IOptions<JWTSettings> JwtSetting,
         UserManager<ApplicationsUser> userManager,
-        SignInManager<ApplicationsUser> signinManger) : IAuthService
+        SignInManager<ApplicationsUser> signinManger,
+        IEmailService _emailService) : IAuthService
     {
 
         private readonly JWTSettings _jwtSettings = JwtSetting.Value;
@@ -34,7 +35,7 @@ namespace E_Commerce.App.Application.Service.Auth
             if (result.IsNotAllowed) throw new UnAuthorizedExeption("Account is not allowed to login");
 
 
-            if (!result.Succeeded) throw new UnAuthorizedExeption("invalid login");
+            if (!result.Succeeded) throw new NotFoundException("Invalid Login" , user.Email);
 
             return new UserDto
             {
@@ -44,12 +45,13 @@ namespace E_Commerce.App.Application.Service.Auth
                 Token = await GeneratTokenAsync(user)
             };
         }
-
         public async Task<UserDto> RegisterAsunc(RegisterDto registerDto)
         {
+            var Emailexisted = await userManager.FindByEmailAsync(registerDto.Email);
+            if (Emailexisted is not null) throw new UnAuthorizedExeption("Email Is Existe");
             var user = new ApplicationsUser
             {
-                UserName = registerDto.UserName,
+                UserName = registerDto.DisplayName.Replace(" ",""),
                 Email = registerDto.Email,
                 DisableName = registerDto.DisplayName,
                 PhoneNumber = registerDto.Phone
@@ -58,6 +60,21 @@ namespace E_Commerce.App.Application.Service.Auth
 
             if (!result.Succeeded) throw new ValidationExeption() { Errors = result.Errors.Select(E=>E.Description)};
 
+            user.Otp = new Random().Next(100000, 999999).ToString();
+            user.OtpExpire = DateTime.UtcNow.AddMinutes(5);
+
+            await userManager.UpdateAsync(user);
+            _emailService.SendEmail(user.Email!,
+                                    "Verify Your Email – Enjaz MultiVendor",
+                                    $@"
+                                    Hello {user.UserName},
+                                    Welcome to Enjaz MultiVendor! Please verify your email by entering the OTP code below:
+                                    {user.Otp}
+                                    This code will expire in 10 minutes.
+                                    If you did not sign up, please ignore this email.
+                                    Thanks,<br/>Enjaz MultiVendor Team "
+            );
+            
             return new UserDto
             {
                 Id = user.Id,
@@ -67,6 +84,65 @@ namespace E_Commerce.App.Application.Service.Auth
             };
 
         }
+
+
+        public async Task ForgotPasswordAsync(ForgatPasswordDto dto /*,string url*/)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user is null) throw new NotFoundException("user not found",dto.Email);
+
+            var otp = new Random().Next(100000, 999999).ToString();
+            var expierd =  DateTime.UtcNow.AddMinutes(5);
+
+            user.Otp = otp;
+            user.OtpExpire = expierd;
+
+            await userManager.UpdateAsync(user);
+            var email = new 
+            {
+                To = user.Email!,
+                Subject = "Reset Password",
+                Body = 
+                $@"
+                Hello {user.UserName}
+                We received a request to reset your password. Use the OTP code below to reset it:
+                {user.Otp}
+                This code will expire in 5 minutes.
+                If you did not request a password reset, please ignore this email.
+                Thanks,Enjaz Application Team"
+            };
+
+
+            _emailService.SendEmail(email.To, email.Subject, email.Body);
+
+        }
+        public async Task ResetPasswordAsync(ResetPasswordDto dto ,string otp)
+        {
+            if(dto.NewPassword != dto.ConfirmPassword)
+                throw new ValidationExeption() { Errors = new List<string> { "New password and confirm password do not match." } };
+
+            var user =await userManager.FindByEmailAsync(dto.Email);
+            
+            if (user is null) throw new NotFoundException("user not found", dto.Email);
+
+            //var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            //Console.WriteLine(decodedToken);
+            if (user.Otp != otp || user.OtpExpire < DateTime.UtcNow)
+                throw new UnAuthorizedExeption("Invalid or expired OTP");
+
+            await userManager.RemovePasswordAsync(user);
+
+            var result = await userManager.AddPasswordAsync(user, dto.NewPassword);
+
+            user.Otp = null;
+            user.OtpExpire = null;
+            await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            
+                throw new ValidationExeption() { Errors =  result.Errors.Select(e => e.Description) };
+        }
+       
 
         private async Task<string> GeneratTokenAsync(ApplicationsUser user)
         {
@@ -97,6 +173,78 @@ namespace E_Commerce.App.Application.Service.Auth
                 );
             return new JwtSecurityTokenHandler().WriteToken(TokenObj);
 
+        }
+
+  
+        public async Task VerifyEmail(VerifyOtpDto dto)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user is null) throw new NotFoundException("user not found", dto.Email);
+
+            if (user.Otp != dto.OTP || user.OtpExpire < DateTime.UtcNow)
+                throw new UnAuthorizedExeption("Invalid or expired OTP");
+
+            user.EmailConfirmed = true;
+            user.Otp = null;
+            user.OtpExpire = null;
+            await userManager.UpdateAsync(user);
+
+        }
+
+        public async Task ResendOTP(ForgatPasswordDto dto)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user is null) throw new NotFoundException("user not found", dto.Email);
+
+            user.Otp = new Random().Next(100000, 999999).ToString();
+            user.OtpExpire = DateTime.UtcNow.AddMinutes(5);
+            await userManager.UpdateAsync(user);
+
+             _emailService.SendEmail(user.Email!,"Resend otp",
+                $@"
+                Hello {user.UserName}
+                We received a request to resend Otp. Use the OTP code below to reset it:
+                {user.Otp}
+                This code will expire in 5 minutes.
+                If you did not request , please ignore this email.
+                Thanks,Enjaz Application Team");
+        }
+       
+        public async Task<UserDto> ExternalLoginAsync(string email, ClaimsPrincipal? principal = null)
+        {
+            //  جلب المستخدم من قاعدة البيانات
+            var user = await userManager.FindByEmailAsync(email);
+
+            //  لو المستخدم مش موجود → تسجيل جديد
+            if (user == null)
+            {
+                var name = principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? email;
+
+                user = new ApplicationsUser
+                {
+                    Email = email,
+                    DisableName = name,
+                    UserName = name.Replace(" ", ""),
+
+                };
+
+                await userManager.CreateAsync(user);
+            }
+
+            // 3️⃣ إنشاء JWT Token
+            var token = GeneratTokenAsync(user);
+
+            // 4️⃣ تجهيز DTO
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                DisablayName = user.DisableName,
+                Token = await GeneratTokenAsync(user)
+
+            };
+
+            return userDto;
         }
     }
 }

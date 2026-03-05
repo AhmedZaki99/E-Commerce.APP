@@ -15,6 +15,7 @@ namespace E_Commerce.App.Application.Abstruction.Models.Product
 
         public int? VendorId { get; set; }
         public virtual string? vendor { get; set; }
+        public string? VendorPictureUrl { get; set; }
 
         public int? CategoryId { get; set; }
         public virtual string? Category { get; set; }

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace E_Commerce.App.Infrastructre.presistent.Migrations
+namespace E_Commerce.App.Infrastructre.presistent._Data.Migrations
 {
     /// <inheritdoc />
-    public partial class intialMigration : Migration
+    public partial class IntialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,6 +18,7 @@ namespace E_Commerce.App.Infrastructre.presistent.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     lastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -38,6 +39,7 @@ namespace E_Commerce.App.Infrastructre.presistent.Migrations
                     Phone = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     lastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),

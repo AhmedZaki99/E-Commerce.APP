@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="_Data\Migrations\" />
     <Folder Include="_Identity\Interceptor\" />
   </ItemGroup>
 

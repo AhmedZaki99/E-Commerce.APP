@@ -10,5 +10,6 @@ namespace E_Commerce.App.Domain.Entities.Product
     public class ProductCategory :BaseEntity<int>
     {
         public required string Name { get; set; }
+        public required string PictureUrl { get; set; }
     }
 }
