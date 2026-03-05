@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace E_Commerce.App.Infrastructre.presistent.Migrations
+namespace E_Commerce.App.Infrastructre.presistent._Data.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20260223143730_intialMigration")]
-    partial class intialMigration
+    [Migration("20260305010446_IntialCreate")]
+    partial class IntialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,6 +105,10 @@ namespace E_Commerce.App.Infrastructre.presistent.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PictureUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("lastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -148,6 +152,10 @@ namespace E_Commerce.App.Infrastructre.presistent.Migrations
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("varchar(11)");
+
+                    b.Property<string>("PictureUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("lastModifiedBy")
                         .HasColumnType("nvarchar(max)");

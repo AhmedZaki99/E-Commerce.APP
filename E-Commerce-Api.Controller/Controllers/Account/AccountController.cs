@@ -1,11 +1,14 @@
 ﻿using E_Commerce.APIs.Controllers.Base;
 using E_Commerce.App.Application.Abstruction.Models.Auth;
 using E_Commerce.App.Application.Abstruction.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,16 +41,16 @@ namespace E_Commerce_Api.Controller.Controllers.Account
             //    values: new {Email = model.Email},          // Query params مش هنا
             //    protocol: Request.Scheme, // http أو https
             //    host: Request.Host.Value // hostname + port
-            
+
             //    );
             await serviceManager.AuthService.ForgotPasswordAsync(model);
             return Ok("Check Your Mail");
 
         }
         [HttpPost("ResetPassword")]
-        public async Task<ActionResult> ResetPassword(ResetPasswordDto model ,[FromQuery]string otp)
+        public async Task<ActionResult> ResetPassword(ResetPasswordDto model, [FromQuery] string otp)
         {
-            await serviceManager.AuthService.ResetPasswordAsync(model,otp );
+            await serviceManager.AuthService.ResetPasswordAsync(model, otp);
             return Ok("Password Saved");
         }
 
@@ -65,5 +68,28 @@ namespace E_Commerce_Api.Controller.Controllers.Account
             await serviceManager.AuthService.ResendOTP(model);
             return Ok("OTP resent successfully");
         }
+
+        ///[HttpGet("signin-google")]
+        ///public ActionResult SignInWithGoogle()
+        ///{
+        ///    var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+        ///    return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        ///}
+         
+        ///[HttpGet("google-response")]
+        ///public async Task<ActionResult> GoogleResponse()
+        ///{
+        ///    var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+        ///    if (!result.Succeeded)
+        ///        return BadRequest("Google authentication failed");
+         
+        ///    var emailClaim = result.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+        ///    if (emailClaim == null)
+        ///        return BadRequest("Email claim not found");
+         
+        ///    var email = emailClaim.Value;
+        ///    var userDto = await serviceManager.AuthService.ExternalLoginAsync(email,result.Principal);
+        ///    return Ok(userDto);
+        ///}
     }
 }

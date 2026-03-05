@@ -6,7 +6,8 @@
     "Password": "Starbucks@123",
     "Address": "Mall of Egypt, 6th of October, Egypt",
     "CreatedBy": "1",
-    "lastModifiedBy": "1"
+    "lastModifiedBy": "1",
+    "PictureUrl": "images/Vendors/Starbucks.png"
   },
   {
     "Id": 0,
@@ -15,7 +16,8 @@
     "Password": "Costa@123",
     "Address": "City Stars Mall, Nasr City, Egypt",
     "CreatedBy": "1",
-    "lastModifiedBy": "1"
+    "lastModifiedBy": "1",
+    "PictureUrl": "images/Vendors/Costa.png"
   },
   {
     "Id": 0,
@@ -24,7 +26,8 @@
     "Password": "Cilantro@123",
     "Address": "Zamalek, Cairo, Egypt",
     "CreatedBy": "1",
-    "lastModifiedBy": "1"
+    "lastModifiedBy": "1",
+    "PictureUrl": "images/Vendors/Cilantro.png"
   },
   {
     "Id": 0,
@@ -33,7 +36,8 @@
     "Password": "TBS@123",
     "Address": "Heliopolis, Cairo, Egypt",
     "CreatedBy": "1",
-    "lastModifiedBy": "1"
+    "lastModifiedBy": "1",
+    "PictureUrl": "images/Vendors/TBS.png"
   },
   {
     "Id": 0,
@@ -42,7 +46,8 @@
     "Password": "OnTheRun@123",
     "Address": "Sheikh Zayed, Giza, Egypt",
     "CreatedBy": "1",
-    "lastModifiedBy": "1"
+    "lastModifiedBy": "1",
+    "PictureUrl": "images/Vendors/On The Run.jpg"
   },
   {
     "Id": 0,
@@ -51,7 +56,8 @@
     "Password": "Caribou@123",
     "Address": "Downtown, Cairo, Egypt",
     "CreatedBy": "1",
-    "lastModifiedBy": "1"
+    "lastModifiedBy": "1",
+    "PictureUrl": "images/Vendors/Caribou.png"
   },
   {
     "Id": 0,
@@ -60,6 +66,7 @@
     "Password": "Krispy@123",
     "Address": "Mall of Arabia, 6th of October, Egypt",
     "CreatedBy": "1",
-    "lastModifiedBy": "1"
+    "lastModifiedBy": "1",
+    "PictureUrl": "images/Vendors/Krispy Kreme.png"
   }
 ]

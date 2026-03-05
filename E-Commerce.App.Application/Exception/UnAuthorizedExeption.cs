@@ -8,7 +8,7 @@ namespace E_Commerce.App.Application.Exception
 {
     public class UnAuthorizedExeption :NotFoundException
     {
-        public UnAuthorizedExeption(string? Message = null) : base(Message,null)
+        public UnAuthorizedExeption(string? Message = null) : base(Message!,null)
         {
             
         }

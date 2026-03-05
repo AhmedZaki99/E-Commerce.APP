@@ -13,6 +13,7 @@ namespace E_Commerce.App.Domain.Entities.Product
         public required string Phone { get; set; }
         public required string Password { get; set; }
         public required string Address { get; set; }
+        public required string PictureUrl { get; set; }
 
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }

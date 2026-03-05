@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,6 @@ namespace E_Commerce.App.Application.Abstruction.Services.Auth
 
         Task ForgotPasswordAsync(ForgatPasswordDto dto);
         Task ResetPasswordAsync(ResetPasswordDto dto,string otp);
-        Task<AuthResponseDto> GoogleLoginAsync(GoogleLoginDto dto);
-
+        Task<UserDto> ExternalLoginAsync(string email, ClaimsPrincipal? principal = null);
     }
 }

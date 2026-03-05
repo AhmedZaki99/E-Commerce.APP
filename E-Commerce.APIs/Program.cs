@@ -13,6 +13,7 @@ using E_Commerce.App.Infrastructre.presistent;
 using E_Commerce.App.Infrastructre.presistent.Identity;
 using E_Commerce_Api.Controller;
 using E_Commerce_Api.Controller.Error;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -100,6 +101,17 @@ namespace E_Commerce.APIs
                         ClockSkew = TimeSpan.FromMinutes(0)
                     };
                 });
+
+            WebApplicationbuilder.Services.AddAuthentication(Option =>
+            {
+                Option.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                Option.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(GoogleOption =>
+            {
+                GoogleOption.ClientId = WebApplicationbuilder.Configuration["Authentication:Google:ClientId"]!;
+                GoogleOption.ClientSecret = WebApplicationbuilder.Configuration["Authentication:Google:ClientSecret"]!;
+            });
+
             WebApplicationbuilder.Services.Configure<EmailSetting>(WebApplicationbuilder.Configuration.GetSection("EmailSettings"));
 
             

@@ -51,7 +51,7 @@ namespace E_Commerce.App.Application.Service.Auth
             if (Emailexisted is not null) throw new UnAuthorizedExeption("Email Is Existe");
             var user = new ApplicationsUser
             {
-                UserName = registerDto.UserName,
+                UserName = registerDto.DisplayName.Replace(" ",""),
                 Email = registerDto.Email,
                 DisableName = registerDto.DisplayName,
                 PhoneNumber = registerDto.Phone
@@ -175,44 +175,7 @@ namespace E_Commerce.App.Application.Service.Auth
 
         }
 
-        public async Task<AuthResponseDto> GoogleLoginAsync(GoogleLoginDto dto)
-        {
-            //var settings = new GoogleJsonWebSignature.ValidationSettings
-            //{
-            //    Audience = new[] { _configuration["Authentication:Google:ClientId"] }
-            //};                  
-
-            var payLoad =await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
-
-            var email = payLoad.Email;
-            var name = payLoad.Name;
-
-            if (email is null) throw new UnAuthorizedExeption("invalid google token");
-            var user = await userManager.FindByEmailAsync(email);
-
-            if (user is null)
-            {
-                user = new ApplicationsUser
-                {
-                    DisableName = name ?? email.Split('@')[0],
-                    Email = email,
-                    UserName = email,
-                    EmailConfirmed = true,
-                };
-                var result = await userManager.CreateAsync(user);
-                if (!result.Succeeded) throw new ValidationExeption() { Errors = result.Errors.Select(e => e.Description) };
-      
-            }
-      
-            var token =await GeneratTokenAsync(user);
-
-            return new AuthResponseDto
-            {
-                Email = user.Email!,
-                Token = token
-            };
-        }
-
+  
         public async Task VerifyEmail(VerifyOtpDto dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
@@ -237,7 +200,7 @@ namespace E_Commerce.App.Application.Service.Auth
             user.OtpExpire = DateTime.UtcNow.AddMinutes(5);
             await userManager.UpdateAsync(user);
 
-             _emailService.SendEmail(user.Email,"Resend otp",
+             _emailService.SendEmail(user.Email!,"Resend otp",
                 $@"
                 Hello {user.UserName}
                 We received a request to resend Otp. Use the OTP code below to reset it:
@@ -245,6 +208,43 @@ namespace E_Commerce.App.Application.Service.Auth
                 This code will expire in 5 minutes.
                 If you did not request , please ignore this email.
                 Thanks,Enjaz Application Team");
+        }
+       
+        public async Task<UserDto> ExternalLoginAsync(string email, ClaimsPrincipal? principal = null)
+        {
+            //  جلب المستخدم من قاعدة البيانات
+            var user = await userManager.FindByEmailAsync(email);
+
+            //  لو المستخدم مش موجود → تسجيل جديد
+            if (user == null)
+            {
+                var name = principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? email;
+
+                user = new ApplicationsUser
+                {
+                    Email = email,
+                    DisableName = name,
+                    UserName = name.Replace(" ", ""),
+
+                };
+
+                await userManager.CreateAsync(user);
+            }
+
+            // 3️⃣ إنشاء JWT Token
+            var token = GeneratTokenAsync(user);
+
+            // 4️⃣ تجهيز DTO
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                DisablayName = user.DisableName,
+                Token = await GeneratTokenAsync(user)
+
+            };
+
+            return userDto;
         }
     }
 }

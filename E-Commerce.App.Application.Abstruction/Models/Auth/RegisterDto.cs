@@ -9,9 +9,6 @@ namespace E_Commerce.App.Application.Abstruction.Models.Auth
 {
     public class RegisterDto
     {
-
-        [Required]
-        public required string UserName { get; set; }
         [Required]
         public required string DisplayName { get; set; }
         [Required]
