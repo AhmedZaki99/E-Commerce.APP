@@ -1,6 +1,5 @@
 ﻿using E_Commerce.App.Domain.Contract.Peresistence;
 using E_Commerce.App.Domain.Contract.Peresistence.DbIntializer;
-using E_Commerce.App.Domain.Entities.Identity;
 using E_Commerce.App.Infrastructre.presistent._Data;
 using E_Commerce.App.Infrastructre.presistent._Data.Interceptor;
 using E_Commerce.App.Infrastructre.presistent._Identity;
@@ -31,7 +30,7 @@ namespace E_Commerce.App.Infrastructre.presistent
 
             options
             .UseLazyLoadingProxies()
-            .UseSqlServer(configuration.GetConnectionString("IdentityDbContext")));
+            .UseSqlServer(configuration.GetConnectionString("IdentityContext")));
             services.AddScoped<IStoreIdentityContextIntializer, StoreIdentityContextIntializer>();
 
             services.AddScoped(typeof(IUnitOfWork) , typeof(UnitOfWork));

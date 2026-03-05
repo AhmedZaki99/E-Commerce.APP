@@ -1,4 +1,5 @@
 ﻿using E_Commerce.App.Domain.Contract.Peresistence.DbIntializer;
+using E_Commerce.App.Domain.Entities.Order;
 using E_Commerce.App.Domain.Entities.Product;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -53,6 +54,23 @@ namespace E_Commerce.App.Infrastructre.presistent._Data
                 {
 
                     await dbContext.Set<Product>().AddRangeAsync(Products);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+
+
+            if (!dbContext.DeliveryMethods.Any())
+            {
+                var path = Path.Combine(ContenRootpath, "Seeds", "delivery.json");
+
+                var deliveryMethodsData = await File.ReadAllTextAsync(path);
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData);
+
+
+                if (deliveryMethods?.Count > 0)
+                {
+
+                    await dbContext.Set<DeliveryMethod>().AddRangeAsync(deliveryMethods);
                     await dbContext.SaveChangesAsync();
                 }
             }

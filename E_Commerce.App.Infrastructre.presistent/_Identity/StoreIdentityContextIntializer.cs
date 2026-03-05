@@ -3,11 +3,6 @@ using E_Commerce.App.Domain.Entities.Identity;
 using E_Commerce.App.Infrastructre.presistent.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace E_Commerce.App.Infrastructre.presistent._Identity
 {

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace E_Commerce.App.Infrastructre.presistent._Data.Config.BaseConfig
 {
     [DbContxtType(typeof(StoreDbContext))]
-    internal class BaseEntityConfiguration<TEntity, TKey> : IEntityTypeConfiguration<TEntity>
+    public class BaseEntityConfiguration<TEntity, TKey> : IEntityTypeConfiguration<TEntity>
         where TEntity : BaseEntity<TKey> 
         where TKey : IEquatable<TKey>
     {
