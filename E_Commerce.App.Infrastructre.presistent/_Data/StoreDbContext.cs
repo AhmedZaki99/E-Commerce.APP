@@ -1,4 +1,5 @@
-﻿using E_Commerce.App.Domain.Entities.Product;
+﻿using E_Commerce.App.Domain.Entities.Order;
+using E_Commerce.App.Domain.Entities.Product;
 using E_Commerce.App.Infrastructre.presistent.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -22,5 +23,9 @@ namespace E_Commerce.App.Infrastructre.presistent._Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Vendor> vendors { get; set; }
         public DbSet<ProductCategory> Categories { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+
     }
 }
