@@ -37,7 +37,9 @@ namespace E_Commerce.App.Application.Service.OrderService
                         {
                             ProductId = product.Id,
                             ProductName = product.Name,
-                            PictureUrl = product.PictureUrl ?? ""
+                            PictureUrl = product.PictureUrl ?? "",
+                            Vendor = product.vendor!.Name
+
                         };
 
                         var orderItem = new OrderItem()

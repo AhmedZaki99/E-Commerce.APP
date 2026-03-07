@@ -11,5 +11,6 @@ namespace E_Commerce.App.Domain.Entities.Order
         public int ProductId { get; set; }
         public required string ProductName { get; set; }
         public required string PictureUrl { get; set; }
+        public required string Vendor { get; set; }
     }
 }

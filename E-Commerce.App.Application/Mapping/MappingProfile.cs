@@ -18,19 +18,26 @@ namespace E_Commerce.App.Application.Mapping
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category!.Name))
                 .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<ProductPictureUrlResolver>())
                 .ForMember(dest => dest.VendorPictureUrl, opt => opt.MapFrom<VendorPictureUrlResloverInProduct>());
+           
+            
             CreateMap<Vendor, VendorDto>()
                 .ForMember(dest=> dest.PictureUrl,opt=>opt.MapFrom<VendorPictureUrlResolver>());
+           
             CreateMap<ProductCategory, CategoryDto>()
                 .ForMember(dest=> dest.PictureUrl, opt => opt.MapFrom<CategoeryPicturteUrlResolver>());
+            
             CreateMap<BasketItem, BasketItemDto>().ReverseMap();
             CreateMap<CustomerBasket, CustomerBasketDto>().ReverseMap();
             CreateMap<Order, OrderToReturneDto>().ForMember(dest => dest.DeliveryMethod, opt => opt.MapFrom(src => src.DeliveryMethod!.ShortName));
+            
             CreateMap<OrderItem, OrderItemDto>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Product.ProductId))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
-                .ForMember(dest => dest.VendorName, opt => opt.MapFrom(src => src.Product.Vendor.Name))
+                .ForMember(dest => dest.VendorName, opt => opt.MapFrom(src => src.Product.Vendor))
                 .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<OrderItemPictureUrlResolver>());
+            
             CreateMap<Address, AddressDto>().ReverseMap();
+            
             CreateMap<DeliveryMethod, DeliveryMethodDto>();
         }
     }
