@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using E_Commerce.App.Application.Abstruction.Models.Basket;
 using E_Commerce.App.Application.Abstruction.Models.Common;
+using E_Commerce.App.Application.Abstruction.Models.Favourite;
 using E_Commerce.App.Application.Abstruction.Models.Orders;
 using E_Commerce.App.Application.Abstruction.Models.Product;
 using E_Commerce.App.Domain.Entities.Basket;
+using E_Commerce.App.Domain.Entities.Favourite;
 using E_Commerce.App.Domain.Entities.Order;
 using E_Commerce.App.Domain.Entities.Product;
 
@@ -37,8 +39,11 @@ namespace E_Commerce.App.Application.Mapping
                 .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<OrderItemPictureUrlResolver>());
             
             CreateMap<Address, AddressDto>().ReverseMap();
-            
+
             CreateMap<DeliveryMethod, DeliveryMethodDto>();
+            CreateMap<Favourites, FavouriteDto>().ReverseMap();
+            CreateMap<FavouriteItem, FavouriteItemDto>()
+               .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<FavouritePictureUrlResolver>()).ReverseMap();
         }
     }
 }

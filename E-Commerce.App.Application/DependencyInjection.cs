@@ -3,11 +3,13 @@ using E_Commerce.App.Application.Abstruction.Models.Auth;
 using E_Commerce.App.Application.Abstruction.Services;
 using E_Commerce.App.Application.Abstruction.Services.Auth;
 using E_Commerce.App.Application.Abstruction.Services.Basket;
+using E_Commerce.App.Application.Abstruction.Services.Favourite;
 using E_Commerce.App.Application.Abstruction.Services.Order;
 using E_Commerce.App.Application.Mapping;
 using E_Commerce.App.Application.Service;
 using E_Commerce.App.Application.Service.Auth;
 using E_Commerce.App.Application.Service.BasketService;
+using E_Commerce.App.Application.Service.FavouriteService;
 using E_Commerce.App.Application.Service.OrderService;
 using E_Commerce.App.Domain.Contract.Infrastructre;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +28,13 @@ namespace E_Commerce.App.Application
             services.AddScoped(typeof(Func<IBasketService>), (servicesProvider) =>
             {
                 return ()=> servicesProvider.GetRequiredService<IBasketService>();
+            }
+            );
+
+            services.AddScoped(typeof(IFavouriteService), typeof(FavouriteService));
+            services.AddScoped(typeof(Func<IFavouriteService>), (servicesProvider) =>
+            {
+                return () => servicesProvider.GetRequiredService<IFavouriteService>();
             }
             );
 
