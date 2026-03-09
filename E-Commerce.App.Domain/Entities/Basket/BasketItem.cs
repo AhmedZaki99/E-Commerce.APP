@@ -13,8 +13,8 @@ namespace E_Commerce.App.Domain.Entities.Basket
             public required string ProductName { get; set; }
             public string? PictureUrl { get; set; }
             public decimal Price { get; set; }
-            public int Quantity { get; set; }
             public string? Vendor { get; set; }
+            public int Quantity { get; set; }
             public string? Category { get; set; }
         }
     

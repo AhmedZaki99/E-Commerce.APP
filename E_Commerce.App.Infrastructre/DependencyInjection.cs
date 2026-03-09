@@ -16,27 +16,8 @@ namespace E_Commerce.App.Infrastructre
                   var connectionMultiplexerObj = ConnectionMultiplexer.Connect(connectionString!);
                   return connectionMultiplexerObj;
               });
-
-/*            services.AddSingleton<IConnectionMultiplexer>(sp =>
-            {
-                var options = new ConfigurationOptions
-                {
-                    EndPoints =
-        {
-            { "redis-13880.c233.eu-west-1-1.ec2.cloud.redislabs.com", 13880 }
-        },
-
-                    User = "default",
-                    Password = "qN4gXTOtm1sw9Y9bGLLQVNayuEMqEyUf",
-                    AbortOnConnectFail = false,
-
-
-                };
-
-                return ConnectionMultiplexer.Connect(options);
-            });*/
-
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
+            services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
 
             return services;
         }
