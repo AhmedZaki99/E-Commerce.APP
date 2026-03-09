@@ -128,16 +128,7 @@ namespace E_Commerce.APIs
                     };
                 });
 
-            WebApplicationbuilder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            }).AddGoogle(O => 
-            {
-                IConfiguration GoogleAuthSection = WebApplicationbuilder.Configuration.GetSection("Authentication:Google");
-                O.ClientId = GoogleAuthSection["ClientId"]!;
-                O.ClientSecret = GoogleAuthSection["ClientSecret"]!;
-            });
+          
             #endregion
 
             var app = WebApplicationbuilder.Build();

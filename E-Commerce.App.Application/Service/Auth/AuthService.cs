@@ -61,7 +61,7 @@ namespace E_Commerce.App.Application.Service.Auth
 
             if (!result.Succeeded) throw new ValidationExeption() { Errors = result.Errors.Select(E=>E.Description)};
 
-            user.Otp = new Random().Next(100000, 999999).ToString();
+            user.Otp = /*new Random().Next(1000, 9999).ToString()*/"1234";
             user.OtpExpire = DateTime.UtcNow.AddMinutes(5);
 
             await userManager.UpdateAsync(user);
@@ -105,7 +105,7 @@ namespace E_Commerce.App.Application.Service.Auth
             var user = await userManager.FindByEmailAsync(dto.Email);
             if (user is null) throw new NotFoundException("user not found",dto.Email);
 
-            var otp = new Random().Next(100000, 999999).ToString();
+            var otp = /*new Random().Next(1000, 9999).ToString()*/ "1234";
             var expierd =  DateTime.UtcNow.AddMinutes(5);
 
             user.Otp = otp;
@@ -130,7 +130,19 @@ namespace E_Commerce.App.Application.Service.Auth
             _emailService.SendEmail(email.To, email.Subject, email.Body);
 
         }
-        public async Task ResetPasswordAsync(ResetPasswordDto dto ,string otp)
+        public async Task CheckOtp(VerifyOtpDto model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null) throw new NotFoundException("Email is not Exsist", model.Email);
+
+            if (user.Otp != model.OTP || user.OtpExpire < DateTime.UtcNow)
+                throw new UnAuthorizedExeption("Invalid or expired OTP");
+
+            user.Otp = null;
+            user.OtpExpire = null;
+            await userManager.UpdateAsync(user);
+        }
+        public async Task ResetPasswordAsync(ResetPasswordDto dto)
         {
             if(dto.NewPassword != dto.ConfirmPassword)
                 throw new ValidationExeption() { Errors = new List<string> { "New password and confirm password do not match." } };
@@ -141,16 +153,13 @@ namespace E_Commerce.App.Application.Service.Auth
 
             //var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
             //Console.WriteLine(decodedToken);
-            if (user.Otp != otp || user.OtpExpire < DateTime.UtcNow)
-                throw new UnAuthorizedExeption("Invalid or expired OTP");
+           
 
             await userManager.RemovePasswordAsync(user);
 
             var result = await userManager.AddPasswordAsync(user, dto.NewPassword);
 
-            user.Otp = null;
-            user.OtpExpire = null;
-            await userManager.UpdateAsync(user);
+           
 
             if (!result.Succeeded)
             
@@ -210,7 +219,7 @@ namespace E_Commerce.App.Application.Service.Auth
             var user = await userManager.FindByEmailAsync(dto.Email);
             if (user is null) throw new NotFoundException("user not found", dto.Email);
 
-            user.Otp = new Random().Next(100000, 999999).ToString();
+            user.Otp = /*new Random().Next(1000, 9999).ToString()*/"1234";
             user.OtpExpire = DateTime.UtcNow.AddMinutes(5);
             await userManager.UpdateAsync(user);
 
@@ -261,11 +270,6 @@ namespace E_Commerce.App.Application.Service.Auth
             return userDto;
         }
 
-        public async Task CheckOtp(string Email, string otp)
-        {
-            var user = await userManager.FindByEmailAsync(Email);
-            //if (user == null) throw NotFoundException("Email is not Exsist", Email);
-            throw new NotImplementedException();    
-        }
+      
     }
 }

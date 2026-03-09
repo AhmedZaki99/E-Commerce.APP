@@ -50,10 +50,17 @@ namespace E_Commerce_Api.Controller.Controllers.Account
 
 
         [HttpPost("ResetPassword")]
-        public async Task<ActionResult> ResetPassword(ResetPasswordDto model, [FromQuery] string otp)
+        public async Task<ActionResult> ResetPassword(ResetPasswordDto model)
         {
-            await serviceManager.AuthService.ResetPasswordAsync(model, otp);
+            await serviceManager.AuthService.ResetPasswordAsync(model);
             return Ok("Password Saved");
+        }
+
+        [HttpPost("CheckOtp")]
+        public async Task<ActionResult> VerifyOtp(VerifyOtpDto model)
+        {
+            await serviceManager.AuthService.CheckOtp(model);
+            return Ok("OTP is true");
         }
 
         [HttpPost("VerifyEmail")]
