@@ -49,6 +49,7 @@ namespace E_Commerce.App.Application.Service.Auth
         {
             var Emailexisted = await userManager.FindByEmailAsync(registerDto.Email);
             if (Emailexisted is not null) throw new UnAuthorizedExeption("Email Is Existe");
+          
             var user = new ApplicationsUser
             {
                 UserName = registerDto.DisplayName.Replace(" ",""),
@@ -85,6 +86,19 @@ namespace E_Commerce.App.Application.Service.Auth
 
         }
 
+        public async Task<UserDto> GetCurrentUser(ClaimsPrincipal principal)
+        {
+            var Email =  principal.FindFirstValue(ClaimTypes.Email);
+            var user = userManager.FindByEmailAsync(Email!).Result;
+
+            return new UserDto
+            {
+                Id = user!.Id,
+                Email = user.Email!,
+                DisablayName = user.DisableName,
+                Token = await GeneratTokenAsync(user)
+            };
+        }
 
         public async Task ForgotPasswordAsync(ForgatPasswordDto dto /*,string url*/)
         {
@@ -245,6 +259,13 @@ namespace E_Commerce.App.Application.Service.Auth
             };
 
             return userDto;
+        }
+
+        public async Task CheckOtp(string Email, string otp)
+        {
+            var user = await userManager.FindByEmailAsync(Email);
+            //if (user == null) throw NotFoundException("Email is not Exsist", Email);
+            throw new NotImplementedException();    
         }
     }
 }

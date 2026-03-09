@@ -17,12 +17,15 @@ namespace E_Commerce.App.Infrastructre.presistent
         public static IServiceCollection AddPersistenceService(this IServiceCollection services,
                                                          IConfiguration configuration)
         {
-            services.AddDbContext<StoreDbContext>(options => 
-            
-            options
-            .UseLazyLoadingProxies()
-            .UseSqlServer(configuration.GetConnectionString("StoreContext")));
-        
+            services.AddDbContext<StoreDbContext>((serviceprovider, options) =>
+            {
+                options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(configuration.GetConnectionString("StoreContext"))
+                .AddInterceptors(serviceprovider.GetRequiredService<CustomSaveChangesInterceptor>());
+                
+            });
+
             services.AddScoped< IStroreContextIntializer , StoreContextIntializer>();
 
 
@@ -37,7 +40,7 @@ namespace E_Commerce.App.Infrastructre.presistent
 
 
 
-            services.AddScoped(typeof(ISaveChangesInterceptor), typeof(CustomSaveChangesInterceptor));
+            services.AddScoped(typeof(CustomSaveChangesInterceptor));
 
             return services;
        }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using E_Commerce.App.Application.Abstruction.Models.Auth;
 using E_Commerce.App.Application.Abstruction.Services;
 using E_Commerce.App.Application.Abstruction.Services.Auth;
 using E_Commerce.App.Application.Abstruction.Services.Basket;
@@ -17,7 +18,7 @@ namespace E_Commerce.App.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicatinServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicatinServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAutoMapper(typeof(MappingProfile));
 
@@ -43,6 +44,9 @@ namespace E_Commerce.App.Application
 
             services.AddScoped(typeof(IServiceManager), typeof(ServiceManager));
             services.AddTransient(typeof(IEmailService), typeof(EmailService));
+            services.Configure<EmailSetting>(configuration.GetSection("EmailSettings"));
+
+
 
             return services;
         }

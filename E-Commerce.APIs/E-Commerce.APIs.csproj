@@ -33,4 +33,8 @@
     <ProjectReference Include="..\E_Commerce.App.Infrastructre\E_Commerce.App.Infrastructre.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Firebase\" />
+  </ItemGroup>
+
 </Project>

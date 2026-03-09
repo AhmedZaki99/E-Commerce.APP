@@ -13,10 +13,12 @@ namespace E_Commerce.App.Application.Abstruction.Services.Auth
 
         Task<UserDto> LoginAsync(LoginDto loginDto);
         Task<UserDto> RegisterAsunc(RegisterDto registerDto);
+        Task<UserDto> GetCurrentUser(ClaimsPrincipal principal);
         Task VerifyEmail(VerifyOtpDto dto);
         Task ResendOTP(ForgatPasswordDto dto);
 
         Task ForgotPasswordAsync(ForgatPasswordDto dto);
+        Task CheckOtp(string Email, string otp);
         Task ResetPasswordAsync(ResetPasswordDto dto,string otp);
         Task<UserDto> ExternalLoginAsync(string email, ClaimsPrincipal? principal = null);
     }

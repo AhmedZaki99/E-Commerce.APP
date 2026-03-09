@@ -5,28 +5,23 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace E_Commerce.App.Infrastructre.presistent._Data.Interceptor
 {
-    internal class CustomSaveChangesInterceptor :SaveChangesInterceptor
+    internal class CustomSaveChangesInterceptor(ILoggedInUserService loggedInUserService) : SaveChangesInterceptor
     {
-        public CustomSaveChangesInterceptor(ILoggedInUserService loggedInUserService)
-        {
-            LoggedInUserService = loggedInUserService;
-        }
+        public ILoggedInUserService LoggedInUserService { get; } = loggedInUserService;
 
-        public ILoggedInUserService LoggedInUserService { get; }
-
-        public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+        public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
             UpdateEntities(eventData.Context);
-            return base.SavedChanges(eventData, result);
+            return base.SavingChanges(eventData, result);
         }
 
-        public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
         {
             UpdateEntities(eventData.Context);
-            return base.SavedChangesAsync(eventData, result, cancellationToken);
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
         }
-
-
+      
 
         private void UpdateEntities(DbContext? context)
         {
@@ -45,5 +40,7 @@ namespace E_Commerce.App.Infrastructre.presistent._Data.Interceptor
 
             }
         }
+
+       
     }
 }

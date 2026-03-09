@@ -10,6 +10,9 @@ using E_Commerce.App.Infrastructre.presistent;
 using E_Commerce.App.Infrastructre.presistent.Identity;
 using E_Commerce_Api.Controller;
 using E_Commerce_Api.Controller.Error;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -80,7 +83,7 @@ namespace E_Commerce.APIs
             WebApplicationbuilder.Services.AddScoped(typeof(ILoggedInUserService), typeof(LoggedInUserService));
 
             WebApplicationbuilder.Services.AddPersistenceService(WebApplicationbuilder.Configuration);
-            WebApplicationbuilder.Services.AddApplicatinServices();
+            WebApplicationbuilder.Services.AddApplicatinServices(WebApplicationbuilder.Configuration);
             WebApplicationbuilder.Services.AddInfrastructureServices(WebApplicationbuilder.Configuration);
             WebApplicationbuilder.Services.Configure<JWTSettings>(WebApplicationbuilder.Configuration.GetSection("JWTSettings"));
 
@@ -124,6 +127,17 @@ namespace E_Commerce.APIs
                         ClockSkew = TimeSpan.FromMinutes(0)
                     };
                 });
+
+            WebApplicationbuilder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(O => 
+            {
+                IConfiguration GoogleAuthSection = WebApplicationbuilder.Configuration.GetSection("Authentication:Google");
+                O.ClientId = GoogleAuthSection["ClientId"]!;
+                O.ClientSecret = GoogleAuthSection["ClientSecret"]!;
+            });
             #endregion
 
             var app = WebApplicationbuilder.Build();

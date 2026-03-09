@@ -4,6 +4,7 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MailKit.Security;
+using E_Commerce.App.Application.Exception;
 
 namespace E_Commerce.App.Application.Service.Auth
 {
@@ -11,10 +12,14 @@ namespace E_Commerce.App.Application.Service.Auth
     {
         public void SendEmail(string to, string subject, string boody)
         {
+            if (string.IsNullOrEmpty(to))
+                throw new NotFoundException("Email is required",to);
+
             var mail = new MimeMessage
             {
                 Sender = MailboxAddress.Parse(_Options.Value.Email),
                 Subject = subject,
+                
             };
 
             mail.To.Add(MailboxAddress.Parse(to));
