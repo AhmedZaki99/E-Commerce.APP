@@ -48,7 +48,7 @@ var errorMessage = ex.ToString();
 ```
 and returns it to the client. That exposes stack traces, type names, and potentially infrastructure details. Context7 ASP.NET Core guidance recommends generic production responses and server-side logging instead.
 
-### 4. Exception inheritance causes authorization failures to masquerade as not-found errors
+### 4. Exception inheritance causes unauthorized failures to masquerade as not-found errors
 File: `E-Commerce.App.Application/Exception/UnAuthorizedExeption.cs`
 
 `UnAuthorizedExeption` currently inherits from `NotFoundException`, which means the middleware routes it through the wrong branch and returns 404 semantics instead of 401/403 semantics.

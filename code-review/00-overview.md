@@ -44,7 +44,7 @@ At the same time, the current implementation is held back by four major risks:
 
 ## Top recommendations by ease
 1. Stop exposing Swagger in all environments (`E-Commerce.APIs/Program.cs`).
-2. Fix `UnAuthorizedExeption` inheritance so it maps to the correct status code.
+2. Fix the `UnAuthorizedExeption` class inheritance so the unauthorized exception maps to the correct status code.
 3. Replace `.Result` in `AuthService.GetCurrentUser`.
 4. Guard null-sensitive claim access in authorized controllers.
 5. Add configuration validation for pagination and email/JWT settings.

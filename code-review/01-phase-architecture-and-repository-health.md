@@ -17,7 +17,7 @@ The active solution file, `E-Commerce.APP.sln`, references these main projects:
 
 However, the repository also contains multiple near-duplicate or placeholder trees outside the active solution, including:
 - `E_Commerce.App.Application`
-- `E_Commerce.App.Application.Abistraction`
+- `E_Commerce.App.Application.Abistraction` (misspelled duplicate of the active abstraction/contracts project)
 - `E_Commerce.App.Domain`
 - `E_Commerce.App.Infrastructure`
 - `E_Commerce.App.Infrastructure.presistent`
