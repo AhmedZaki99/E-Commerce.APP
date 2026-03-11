@@ -1,0 +1,56 @@
+# AGENTS.md - Guide for AI Coding Agents
+
+This repository is a .NET-based E-commerce monolithic application. This file provides context and instructions for AI agents working on code reviews, bug fixing, and documentation tasks.
+
+## 🚀 Project Overview
+- **Domain**: E-commerce (Product management, Basket, Ordering, Authentication).
+- **Architecture**: Clean / Onion Architecture with a focus on decoupling through interfaces and abstractions.
+- **Stage**: Early development / Prototype (contains placeholder projects and seed data).
+
+## 🛠 Tech Stack
+- **Framework**: .NET 8.0 / ASP.NET Core
+- **Persistence**: Entity Framework Core (SQL Server targeted)
+- **Identity**: ASP.NET Core Identity with JWT Bearer Authentication
+- **Mapping**: AutoMapper
+- **Patterns**:
+  - **Repository Pattern**: Generic Repository for CRUD.
+  - **Unit of Work**: Managing transactions across multiple repositories.
+  - **Specification Pattern**: For flexible querying logic in the Domain layer.
+  - **Service Manager**: Consolidating application services.
+
+## 📂 Repository Structure
+Focus on the projects included in `E-Commerce.APP.sln`:
+- **src/APIs/E-Commerce.APIs**: Main entry point, Program.cs, Middleware, and Seeding logic.
+- **src/APIs/E-Commerce-Api.Controller**: API Controllers.
+- **src/Core/E-Commerce.App.Domain**: Entities, Specification interfaces, and BaseEntity.
+- **src/Core/E-Commerce.App.Application.Abstruction**: Service interfaces and DTOs.
+- **src/Core/E-Commerce.App.Application**: Service implementations, Mapping profiles, and custom Exceptions.
+- **src/Infrastructre/E_Commerce.App.Infrastructre.presistent**: DB Contexts (Store & Identity), Migrations, and Repository implementations.
+
+> **Note**: Folders like `WebApplication1` or those ending in `presistentNew` or `presistentASD` are currently placeholders or redundant artifacts and should generally be ignored unless specifically referenced.
+
+## 📝 Guidelines for Agents
+
+### 1. Code Review (Top Priority)
+- Ensure new logic follows the established **Specification Pattern** for queries rather than leaking LINQ into Services.
+- Verify that **DTOs** are used for API responses instead of exposing Domain Entities directly.
+- Check for proper **Exception Handling** using the custom exceptions in `E-Commerce.App.Application/Exception`.
+- Ensure **Dependency Injection** is updated in `DependencyInjection.cs` files when adding new services.
+
+### 2. Bug Fixing
+- **Persistence**: If a query fails, check the `Specifications` in the Domain layer and the `SpecificationsEvaluator` in Infrastructure.
+- **Auth**: Validate JWT settings in `appsettings.json` and configuration in `Program.cs`.
+- **Mapping**: Check `MappingProfile.cs` if DTO fields are null or incorrectly mapped.
+
+### 3. Documentation
+- Keep the `docs/` directory updated with architectural changes.
+- Use human-readable summaries in `README.md`.
+
+## ⚙️ Commands
+- **Build**: `dotnet build`
+- **Run**: `dotnet run --project E-Commerce.APIs/E-Commerce.APIs.csproj`
+- **Add Migration**: `dotnet ef migrations add <Name> --project E_Commerce.App.Infrastructre.presistent --startup-project E-Commerce.APIs`
+
+## ⚠️ Security & Gotchas
+- Identity uses JWT. Authentication logic is centralized in `E-Commerce.APIs/Program.cs`.
+- Sensitive settings (like JWT Keys) should be in `appsettings.json` (currently using development defaults).
