@@ -50,6 +50,3 @@ Detailed documentation for different system components can be found in the [`doc
 - **ORM**: Entity Framework Core
 - **Mapping**: AutoMapper
 - **Patterns**: Unit of Work, Repository, Specification Pattern.
-
----
-*Maintained by the Senior Development Team.*
